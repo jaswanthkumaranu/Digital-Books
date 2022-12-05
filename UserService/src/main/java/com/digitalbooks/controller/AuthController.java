@@ -77,7 +77,14 @@ public class AuthController {
 		if (userRepository.existsByEmailId(signUpRequest.getEmail())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
 		}
-
+		if (signUpRequest != null && signUpRequest.getRole() != null && !signUpRequest.getRole().isEmpty()) {
+			for (String s : signUpRequest.getRole()) {
+				if (!s.equalsIgnoreCase("admin") && !s.equalsIgnoreCase("user") && !s.equalsIgnoreCase("author")
+						&& !s.equalsIgnoreCase("reader")) {
+					return ResponseEntity.badRequest().body(new MessageResponse("Error: Role is Not Valid!"));
+				}
+			}
+		}
 		// Create new user's account
 		UserVo user = new UserVo(signUpRequest.getUsername(), signUpRequest.getEmail(),
 				encoder.encode(signUpRequest.getPassword()));
