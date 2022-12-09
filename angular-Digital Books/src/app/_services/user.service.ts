@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const API_URL = 'http://localhost:8082/api/test/';
+const API_URL = 'http://localhost:8082/api/user/';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +24,12 @@ export class UserService {
 
   getAdminBoard(): Observable<any> {
     return this.http.get(API_URL + 'admin', { responseType: 'text' });
+  }
+
+  search(category: string, title: string, author: string,price:number,publisher:string): Observable<any> {
+    return this.http.get(API_URL + 'search?category='+category+'&title='+title+'&author='+author+'&price='+price+'&publisher='+publisher, 
+    {
+      responseType: 'text'
+    });
   }
 }

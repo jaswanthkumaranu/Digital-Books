@@ -8,13 +8,14 @@ import { UserService } from '../_services/user.service';
 })
 export class HomeComponent implements OnInit {
   content?: string;
+  errorMessage = '';
 
   search: any = {
     title: null,
     author: null,
     publisher: null,
     category:null,
-    price:null
+    price:[(0)]
   };
 
   constructor(private userService: UserService) { }
@@ -30,6 +31,16 @@ export class HomeComponent implements OnInit {
     );
   }
   onSubmit(): void {
-    
+    const { category, title, author,price,publisher } = this.search;
+    this.userService.search(category, title, author,price,publisher).subscribe(
+      data => {
+        console.log(data);
+      },
+      err => {
+        this.errorMessage = err.error.message;
+        
+      }
+    );
+
   }
 }
