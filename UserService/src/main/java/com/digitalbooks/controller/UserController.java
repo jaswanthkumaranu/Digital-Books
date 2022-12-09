@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbooks.dto.BookDto;
@@ -100,19 +101,44 @@ public class UserController {
 	}
 
 	@PostMapping("/author/{authorId}/books")
-	@PreAuthorize("hasRole('AUTHOR')")
-	public ResponseEntity<BookDto> createBook(@RequestBody BookDto book, @PathVariable String authorId)
+//	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
+	public ResponseEntity<?> createBook(@RequestBody BookDto book, @PathVariable String authorId)
 			throws UserManagmentException {
 		try {
-			BookDto bookvo = userService.createBook(book, authorId);
-			if (bookvo != null && bookvo.getBookId() > 0)
+			Object bookvo = userService.createBook(book, authorId);
+			if (bookvo != null)
 				return ResponseEntity.status(200).body(book);
 			else
 				throw new UserManagmentException(" cant create Book--->");
 		} catch (Exception e) {
-			throw new UserManagmentException("cant create Book--->", e);
+			throw new UserManagmentException("cant create Book---> error", e);
 		}
 
 	}
 
+	@PostMapping(value="/author/{authorId}/books/{bookId}")
+	public ResponseEntity<?> updateBook(@RequestBody BookDto book,@PathVariable String authorId,@PathVariable String bookId) throws UserManagmentException{
+		
+		try {
+			Object bookvo= userService.updateBook(book,authorId,bookId);
+			return ResponseEntity.status(200).body(bookvo);
+			
+		}catch(Exception e) {
+			throw new UserManagmentException("Updating the Book got error--->",e);
+		}
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<BookDto>> searchBooksNew(@RequestParam(name="category" ,defaultValue="") String category,@RequestParam(name="title",defaultValue="") String title,@RequestParam(name="author",defaultValue="") String author,@RequestParam(name="price",defaultValue="0") String price,@RequestParam(name="publisher",defaultValue="") String publisher ) throws UserManagmentException{
+		List<BookDto> books=null; 
+		try {
+			books= userService.searchBook(category,title,author,price,publisher);
+			return ResponseEntity.status(200).body(books);
+			
+		}catch(Exception e) {
+			throw new UserManagmentException("Search ERROR()--->",e);
+		}
+		
+		
+	}
 }
