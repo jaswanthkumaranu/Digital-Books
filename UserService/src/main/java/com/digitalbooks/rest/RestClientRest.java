@@ -1,11 +1,7 @@
 package com.digitalbooks.rest;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.digitalbooks.dto.BookDto;
+import com.digitalbooks.dto.ReaderVo;
 import com.digitalbooks.payload.response.MessageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 
@@ -48,21 +43,55 @@ public class RestClientRest {
 
 	}
 	
-	public ResponseEntity<BookDto> postForBook(String url,BookDto book) {
-//		ResponseEntity<BookDto> savedBook = restTemplate.postForEntity(BOOK_URL+url, book , BookDto.class);
+	public ResponseEntity<MessageResponse> postForBook(String url,BookDto book) {
 		MessageResponse result = restTemplate.postForObject(BOOK_URL+url, book, MessageResponse.class);
-		System.out.println(result);
-		 ResponseEntity.ok(result);
-		
-		return null;
+		return ResponseEntity.ok(result);
+	}
+	public ResponseEntity<?> updateForBook(String url,BookDto book) {
+		List<BookDto> result = restTemplate.postForObject(BOOK_URL+url, book, List.class);
+		return ResponseEntity.ok(result);
 	}
 	
 	public ResponseEntity<?> searchBook(String url,String category, String title, String author, String price, String publisher) throws JsonProcessingException {
 	
-		 RestTemplate restTemplate = new RestTemplate();
 		 List<BookDto> result = restTemplate.getForObject(BOOK_URL+"search?category={category}&title={title}&author={author}&price={price}&publisher={publisher}", List.class,category,title, author, price, publisher );
 		 return ResponseEntity.ok(result);
 		
 	}
 
+	public ResponseEntity<String> subscribeBook(String url, String bookId, ReaderVo reader) {
+
+	       String result = restTemplate.postForObject(BOOK_URL+url, reader, String.class);
+	        return ResponseEntity.ok(result);
+	}
+
+	public ResponseEntity<?> getAllSubscribeBooksByReader(String url, String emailId) {
+		List<BookDto> result = restTemplate.getForObject(BOOK_URL+url, List.class,emailId );
+		 return ResponseEntity.ok(result);
+	}
+
+	public ResponseEntity<?> getSubscribeBookByReaderEmailId(String url, String emailId, String subscriptionId) {
+		System.out.println(BOOK_URL+url);
+		List<BookDto> result = restTemplate.getForObject(BOOK_URL+url, List.class );
+		 return ResponseEntity.ok(result);
+	}
+
+	public ResponseEntity<String> getSubscribeBookByReader(String url) {
+		 String result = restTemplate.getForObject(BOOK_URL+url,  String.class);
+	        return ResponseEntity.ok(result);
+	}
+
+	public ResponseEntity<String> cancleSubscriptionWithIn24Hours(String url,String subscriptionId) {
+		 String result = restTemplate.postForObject(BOOK_URL+url,  subscriptionId,String.class);
+	        return ResponseEntity.ok(result);
+	}
+
+	public ResponseEntity<String> blockOrUnBlockBookByAuthor(String url, String authorId, String bookId,
+			String block) {
+		 String result = restTemplate.postForObject(BOOK_URL+url,null, String.class,authorId,bookId,block);
+	        return ResponseEntity.ok(result);
+	}
+
+	
+	
 }

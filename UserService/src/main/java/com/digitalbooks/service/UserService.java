@@ -23,7 +23,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.digitalbooks.dto.BookDto;
+import com.digitalbooks.dto.ReaderVo;
 import com.digitalbooks.model.UserVo;
+import com.digitalbooks.payload.response.MessageResponse;
 import com.digitalbooks.repository.UserRepository;
 import com.digitalbooks.rest.RestClientRest;
 import com.digitalbooks.utility.UserManagmentException;
@@ -97,7 +99,7 @@ public class UserService implements UserDetailsService {
 		} else if (book.getBookTitle() == null || book.getBookTitle().equalsIgnoreCase(EMPTY_STRING)) {
 			throw new UserManagmentException("Book Title cant be Empty!");
 		} else {
-			ResponseEntity<BookDto> createdBook = restClient.postForBook("author/" + authorId + "/books", book);
+			ResponseEntity<MessageResponse> createdBook = restClient.postForBook("author/" + authorId + "/books", book);
 			if (createdBook != null) {
 				return createdBook;
 			} else {
@@ -106,7 +108,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public ResponseEntity<BookDto> updateBook(BookDto book, String authorId, String bookId)
+	public Object updateBook(BookDto book, String authorId, String bookId)
 			throws UserManagmentException {
 		if (book.getPrice() == null || book.getPrice() < 0) {
 			throw new UserManagmentException("Price cant be  Negative or NUll!");
@@ -114,7 +116,7 @@ public class UserService implements UserDetailsService {
 		} else if (book.getBookTitle() == null || book.getBookTitle().equalsIgnoreCase(EMPTY_STRING)) {
 			throw new UserManagmentException("Book Title cant be Empty!");
 		} else {
-			ResponseEntity<BookDto> createdBook = restClient.postForBook("author/" + authorId + "/books/" + bookId,
+			ResponseEntity<?> createdBook = restClient.updateForBook("author/" + authorId + "/books/" + bookId,
 					book);
 			if (createdBook != null) {
 				return createdBook;
@@ -126,14 +128,87 @@ public class UserService implements UserDetailsService {
 
 	public List<BookDto> searchBook(String category, String title, String author, String price, String publisher)
 			throws JsonProcessingException {
-//		String jsonString=
 		ResponseEntity<?> books = restClient.searchBook("search", category, title, author, price, publisher);
-
-//		ObjectMapper mapper = new ObjectMapper();
-//		StudentList studentList = mapper.readValue(jsonString, StudentList.class);
-		List<BookDto> bookList= null;
-		if(books.getStatusCode().equals(HttpStatus.OK))
-		 bookList=  (List<BookDto>) books.getBody();
+		List<BookDto> bookList = null;
+		if (books.getStatusCode().equals(HttpStatus.OK))
+			bookList = (List<BookDto>) books.getBody();
 		return bookList;
+	}
+
+	public boolean subscribeBook(String bookId, ReaderVo reader) throws NumberFormatException, Exception {
+		boolean subscribe=false;
+		
+		UserVo user=getUserById(Long.parseLong(reader.getReaderId()));
+		if(user!=null&&user.getEmailId().equalsIgnoreCase(reader.getReaderEmail())) {
+		
+		ResponseEntity<String> result = restClient.subscribeBook(bookId + "/subscribe", bookId, reader);
+		System.out.println("subscribe book status code" + result.getStatusCode());
+		if (result.getStatusCode().equals(HttpStatus.OK)) {
+			subscribe=true;
+		}
+		}else {
+			 throw  new UserManagmentException("User not valid");
+		}
+
+		return subscribe;
+	}
+
+	public List<BookDto> getAllSubscribeBooksByReader(String emailId) throws UserManagmentException {
+		List<BookDto> bookList = null;
+		boolean userExists=userRepository.existsByEmailId(emailId);
+		
+		if(userExists) {
+			ResponseEntity<?> books = restClient.getAllSubscribeBooksByReader("readers/{emailId}/books", emailId);
+			
+			if (books.getStatusCode().equals(HttpStatus.OK))
+				bookList = (List<BookDto>) books.getBody();
+		}
+		else {
+			throw new UserManagmentException("User Not Valid..!");
+		}
+		
+		return bookList;
+	}
+
+	public BookDto getSubscribeBookByReaderEmailId(String emailId, String subscriptionId) throws UserManagmentException {
+		List<BookDto> bookList = null;
+		boolean userExists=userRepository.existsByEmailId(emailId);
+		if(userExists) {
+			ResponseEntity<?> books = restClient.getSubscribeBookByReaderEmailId("readers/"+emailId+"/books/"+subscriptionId, emailId,subscriptionId);
+			
+			if (books.getStatusCode().equals(HttpStatus.OK))
+				bookList =  (List<BookDto>)  books.getBody();
+		}
+		else {
+			throw new UserManagmentException("User Not Valid..!");
+		}
+		return bookList.get(0);
+		
+	}
+
+	public String getSubscribeBookByReader(String emailId, String subscriptionId) {
+		
+		String content="";
+		ResponseEntity<String> result = restClient.getSubscribeBookByReader("readers/"+emailId + "/books/"+subscriptionId+"/read");
+		if(result.getStatusCode().equals(HttpStatus.OK))
+			content=result.getBody();
+		
+		return content;
+	}
+
+	public boolean cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) {
+		boolean cancleSub=false;
+		ResponseEntity<String> result = restClient.cancleSubscriptionWithIn24Hours("readers/"+readerId + "/books/"+subscriptionId+"/cancel-subscription",subscriptionId);
+		if(result.getStatusCode().equals(HttpStatus.OK))
+			cancleSub=true;
+		return cancleSub;
+	}
+
+	public boolean blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) {
+		boolean blockOrUnBlock=false;
+		ResponseEntity<String> result = restClient.blockOrUnBlockBookByAuthor("author/{authorId}/books/{bookId}/block={block}",authorId,bookId,block);
+		if(result.getStatusCode().equals(HttpStatus.OK))
+			blockOrUnBlock=true;
+		return blockOrUnBlock;
 	}
 }
