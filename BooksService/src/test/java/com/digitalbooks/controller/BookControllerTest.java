@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.digitalbooks.BooksServiceApplication;
 import com.digitalbooks.model.BookVo;
+import com.digitalbooks.response.MessageResponse;
 import com.digitalbooks.service.BookService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK, classes={ BooksServiceApplication.class })
@@ -44,7 +45,7 @@ public class BookControllerTest {
 	@Test
 	public void testCreateBookWithValidRequest() throws Exception {
 		BookVo book = new BookVo();
-		when(bookServiceMock.createBook((BookVo) any(BookVo.class), "1")).thenReturn(book);
+		when(bookServiceMock.createBook((BookVo) any(BookVo.class), "1")).thenReturn(new MessageResponse("Book added successfully!"));
 
 		mockMvc.perform(post("/author/1/books").contentType(MediaType.APPLICATION_JSON)
 				.content("\"bookId\": 0,\r\n" + "  \"bookTitle\": \"MAD MAX\",\r\n" + "  \"bookCode\": \"MAD\",\r\n"

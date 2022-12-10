@@ -24,6 +24,7 @@ import com.digitalbooks.model.BookVo;
 import com.digitalbooks.model.SubscribeBookVo;
 import com.digitalbooks.repository.BookRepository;
 import com.digitalbooks.repository.SubscribeBookRepository;
+import com.digitalbooks.response.MessageResponse;
 import com.digitalbooks.utility.BookServiceExceptionHandler;
 
 @Service
@@ -36,14 +37,28 @@ public class BookServiceImpl implements BookService {
 	private SubscribeBookRepository subscribeBookRepository;
 
 	@Override
-	public BookVo createBook(BookVo book, String authorId) {
+	public MessageResponse createBook(BookVo book, String authorId) {
+		if (bookRepository.existsByAuthorIdAndBookTitle(authorId, book.getBookTitle())) {
+			return new MessageResponse("Book with same title exists!");
+		}
+		try {
 		book.setCreatedDt(new Date());
 		if (book.getBlock() == null || book.getBlock() > 1)
 			book.setBlock(0L);
 		book.setSubscriptionCount(0L);
 		if (book.getPrice() == null || book.getPrice() < 0)
 			book.setPrice(0.0);
-		return bookRepository.save(book);
+		book.setBookId(0L);
+		book.setCrtUsr(Long.parseLong(authorId));
+		book.setAuthorId(authorId);
+		book.setCreatedDt(new Date());
+		if(book.getBookCode()==null||book.getBookCode().equalsIgnoreCase(""))
+			book.setBookCode(book.getBookTitle().substring(0, 3));
+		System.out.println("calling book service"+book.getBookTitle());
+		}catch(Exception e) {
+			return new MessageResponse("Error: " + e.getMessage());
+		}
+		return new MessageResponse("Book added successfully!");
 	}
 
 	@Override
@@ -88,7 +103,7 @@ public class BookServiceImpl implements BookService {
 			books = bookRepository.searchBook(category, title, author, price, publisher);
 		}
 		if (!category.isEmpty() || !title.isEmpty() || !author.isEmpty() || !price.isEmpty() || !publisher.isEmpty()) {
-			//for single value search
+			// for single value search
 			books = bookRepository.findByCategoryOrBookTitleOrAuthorIdOrPriceOrPublisher(category, title, author,
 					Double.parseDouble(price), publisher);
 		}
@@ -120,7 +135,7 @@ public class BookServiceImpl implements BookService {
 				List<SubscribeBookVo> books = subscribeBookRepository.findByReaderId(reader.getReaderId());
 				boolean notsubscribe = true;
 				for (SubscribeBookVo subbook : books) {
-					if (subbook.getBookId() == Long.parseLong(bookId)) {
+					if (subbook.getBookId() == Long.parseLong(bookId)&& subbook.getIsActive()==1L) {
 						notsubscribe = false;
 					}
 				}
@@ -216,6 +231,7 @@ public class BookServiceImpl implements BookService {
 		if (subscribeBooksDtls != null && !subscribeBooksDtls.isEmpty()) {
 			List<Long> bookIds = new ArrayList<>();
 			for (SubscribeBookVo subscribeBook : subscribeBooksDtls) {
+				if(subscribeBook.getIsActive()==1L)
 				bookIds.add(subscribeBook.getBookId());
 
 			}

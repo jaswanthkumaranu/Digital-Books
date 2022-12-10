@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.digitalbooks.dto.ReaderVo;
 import com.digitalbooks.model.BookVo;
+import com.digitalbooks.response.MessageResponse;
 import com.digitalbooks.utility.BookServiceExceptionHandler;
 
 public interface BookService {
 
-	BookVo createBook(BookVo book, String authorId);
+	MessageResponse createBook(BookVo book, String authorId);
 
 	BookVo updateBook(BookVo book, String authorId,String bookId) throws BookServiceExceptionHandler;
 
