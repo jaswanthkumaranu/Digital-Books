@@ -3,6 +3,7 @@
     <p>{{ content }}</p>
   </header>
 </div>
+
 <div class="col-md-12">
   <div class="card card-container">
     <form
@@ -11,25 +12,25 @@
     #f="ngForm"
     novalidate
   >
-<h1>Search Book</h1>
+<h1>Create Book</h1>
 
 <div class="col-md-4">
   <div class="form-group">
-    <label for="category">Category</label>
+    <label for="bookTitle">Title</label>
     <input
       type="text"
       class="form-control"
-      name="category"
-      [(ngModel)]="search.category"
+      name="bookTitle"
+      [(ngModel)]="create.bookTitle"
       minlength="3"
       maxlength="20"
-      #category="ngModel"
+      #bookTitle="ngModel"
     />
-    <div class="alert-danger" *ngIf="category.errors && f.submitted">
-      <div *ngIf="category.errors.minlength">
+    <div class="alert-danger" *ngIf="bookTitle.errors && f.submitted">
+      <div *ngIf="bookTitle.errors.minlength">
         Category must be at least 3 characters
       </div>
-      <div *ngIf="category.errors.maxlength">
+      <div *ngIf="bookTitle.errors.maxlength">
         Category must be at most 20 characters
       </div>
     </div>
@@ -37,12 +38,12 @@
 </div>
 <div class="col-md-4">
   <div class="form-group">
-    <label for="title">Title</label>
+    <label for="category">Category</label>
     <input
       type="text"
       class="form-control"
-      name="title"
-      [(ngModel)]="search.title"
+      name="category"
+      [(ngModel)]="create.category"
       minlength="3"
       maxlength="20"
       #title="ngModel"
@@ -57,28 +58,7 @@
     </div>
   </div>
 </div>
-<div class="col-md-4">
-  <div class="form-group">
-    <label for="author">Author</label>
-    <input
-      type="text"
-      class="form-control"
-      name="author"
-      [(ngModel)]="search.author"
-      minlength="3"
-      maxlength="20"
-      #author="ngModel"
-    />
-    <div class="alert-danger" *ngIf="author.errors && f.submitted">
-      <div *ngIf="author.errors.minlength">
-        Author must be at least 3 characters
-      </div>
-      <div *ngIf="author.errors.maxlength">
-        Author must be at most 20 characters
-      </div>
-    </div>
-  </div>
-</div>
+
 <div class="col-md-4">
   <div class="form-group">
     <label for="price">Price</label>
@@ -86,8 +66,8 @@
       type="number"
       class="form-control"
       name="price"
-      [(ngModel)]="search.price"
-      minlength="1"
+      [(ngModel)]="create.price"
+      minlength="0"
       maxlength="1000"
       #price="ngModel"
     />
@@ -108,7 +88,7 @@
       type="text"
       class="form-control"
       name="publisher"
-      [(ngModel)]="search.publisher"
+      [(ngModel)]="create.publisher"
       minlength="3"
       maxlength="20"
       #publisher="ngModel"
@@ -123,15 +103,68 @@
     </div>
   </div>
 </div>
+<div class="col-md-4">
+  <div class="form-group">
+    <label for="isActive">Active</label>
+    <input
+      type="number"
+      class="form-control"
+      name="isActive"
+      [(ngModel)]="create.isActive"
+      minlength="0"
+      maxlength="1"
+      #isActive="ngModel"
+    />
+    <div class="alert-danger" *ngIf="isActive.errors && f.submitted">
+      <div *ngIf="isActive.errors.minlength">
+        Active must be at least 3 characters
+      </div>
+      <div *ngIf="isActive.errors.maxlength">
+        Active must be at most 20 characters
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-4">
+  <div class="form-group">
+    <label for="bookContent">Content</label>
+    <input
+      type="text"
+      class="form-control"
+      name="bookContent"
+      [(ngModel)]="create.bookContent"
+      minlength="3"
+      maxlength="20"
+      #bookContent="ngModel"
+    />
+    <div class="alert-danger" *ngIf="bookContent.errors && f.submitted">
+      <div *ngIf="bookContent.errors.minlength">
+        Content must be at least 3 characters
+      </div>
+      <div *ngIf="bookContent.errors.maxlength">
+        Content must be at most 20 characters
+      </div>
+    </div>
+  </div>
+</div>
 <div class="col-md-3">
 <div class="form-group">
-  <button class="btn btn-primary btn-block">Search</button>
+  <button class="btn btn-primary btn-block">Save</button>
 </div>
+</div>
+<div class="form-group">
+  <div
+    class="alert alert-danger"
+    role="alert"
+    *ngIf="f.submitted && isCreatedFailed"
+  >
+    Create Book failed: {{ errorMessage }}
+  </div>
+  <div class="alert alert-success" *ngIf="f.submitted &&isCreatedIn">
+    Your Book is Created successful!
+  </div>
 </div>
  </form>
 
 </div>
 </div>
-    
-
-
