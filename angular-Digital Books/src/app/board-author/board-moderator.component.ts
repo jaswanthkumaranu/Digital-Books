@@ -8,7 +8,7 @@ import { UserService } from '../_services/user.service';
 })
 export class BoardModeratorComponent implements OnInit {
   content?: string;
-  create: any = {
+  form: any = {
     bookTitle: null,
     publisher: null,
     category: null,
@@ -34,8 +34,8 @@ export class BoardModeratorComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const { bookTitle, category, price, publisher, isActive, bookContent } = this.create;
-    this.userService.create(this.create).subscribe(
+    const { bookTitle, category, price, publisher, isActive, bookContent } = this.form;
+    this.userService.create(this.form).subscribe(
       data => {
         console.log(data);
         if (data == 'Book with same title exists!') {

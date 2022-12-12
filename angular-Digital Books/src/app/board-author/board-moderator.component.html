@@ -21,12 +21,14 @@
       type="text"
       class="form-control"
       name="bookTitle"
-      [(ngModel)]="create.bookTitle"
+      [(ngModel)]="form.bookTitle"
       minlength="3"
-      maxlength="20"
+      maxlength="30"
+      required="true"
       #bookTitle="ngModel"
     />
     <div class="alert-danger" *ngIf="bookTitle.errors && f.submitted">
+      <div *ngIf="bookTitle.errors.required">Title is required</div>
       <div *ngIf="bookTitle.errors.minlength">
         Category must be at least 3 characters
       </div>
@@ -43,16 +45,18 @@
       type="text"
       class="form-control"
       name="category"
-      [(ngModel)]="create.category"
+      [(ngModel)]="form.category"
+      required="true"
       minlength="3"
       maxlength="20"
-      #title="ngModel"
+      #category="ngModel"
     />
-    <div class="alert-danger" *ngIf="title.errors && f.submitted">
-      <div *ngIf="title.errors.minlength">
+    <div class="alert-danger" *ngIf="category.errors && f.submitted">
+      <div *ngIf="category.errors.required">Category is required</div>
+      <div *ngIf="category.errors.minlength">
         Title must be at least 3 characters
       </div>
-      <div *ngIf="title.errors.maxlength">
+      <div *ngIf="category.errors.maxlength">
         Title must be at most 20 characters
       </div>
     </div>
@@ -66,12 +70,15 @@
       type="number"
       class="form-control"
       name="price"
-      [(ngModel)]="create.price"
-      minlength="0"
-      maxlength="1000"
+      required="true"
+      [(ngModel)]="form.price"
+      oninput="this.value = Math.abs(this.value)"
+      min="0"
+      max="5000"
       #price="ngModel"
     />
     <div class="alert-danger" *ngIf="price.errors && f.submitted">
+      <div *ngIf="price.errors.required">Price is required</div>
       <div *ngIf="price.errors.minlength">
         Price must be at least 3 characters
       </div>
@@ -88,12 +95,14 @@
       type="text"
       class="form-control"
       name="publisher"
-      [(ngModel)]="create.publisher"
+      required="true"
+      [(ngModel)]="form.publisher"
       minlength="3"
       maxlength="20"
       #publisher="ngModel"
     />
     <div class="alert-danger" *ngIf="publisher.errors && f.submitted">
+      <div *ngIf="publisher.errors.required">Publisher is required</div>
       <div *ngIf="publisher.errors.minlength">
         Publisher must be at least 3 characters
       </div>
@@ -110,12 +119,14 @@
       type="number"
       class="form-control"
       name="isActive"
-      [(ngModel)]="create.isActive"
+      required="true"
+      [(ngModel)]="form.isActive"
       minlength="0"
       maxlength="1"
       #isActive="ngModel"
     />
     <div class="alert-danger" *ngIf="isActive.errors && f.submitted">
+      <div *ngIf="isActive.errors.required">Active is required</div>
       <div *ngIf="isActive.errors.minlength">
         Active must be at least 3 characters
       </div>
@@ -130,16 +141,18 @@
     <label for="bookContent">Content</label>
     <input
       type="text"
+      required="true"
       class="form-control"
       name="bookContent"
-      [(ngModel)]="create.bookContent"
+      [(ngModel)]="form.bookContent"
       minlength="10"
       maxlength="1000"
       #bookContent="ngModel"
     />
     <div class="alert-danger" *ngIf="bookContent.errors && f.submitted">
+      <div *ngIf="bookContent.errors.required">Content is required</div>
       <div *ngIf="bookContent.errors.minlength">
-        Content must be at least 3 characters
+        Content must be at least 10 characters
       </div>
       <div *ngIf="bookContent.errors.maxlength">
         Content must be at most 20 characters
