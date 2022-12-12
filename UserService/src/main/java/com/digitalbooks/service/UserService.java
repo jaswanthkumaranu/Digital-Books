@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
 		return UserDetailsImpl.build(user);
 	}
 
-	public Object createBook(BookDto book, String authorId) throws UserManagmentException {
+	public ResponseEntity<MessageResponse> createBook(BookDto book, String authorId) throws UserManagmentException {
 		if (book.getPrice() == null || book.getPrice() < 0) {
 			throw new UserManagmentException("Price cant be  Negative or NUll!");
 

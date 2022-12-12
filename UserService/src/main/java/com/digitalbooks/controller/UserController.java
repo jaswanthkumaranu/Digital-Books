@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digitalbooks.dto.BookDto;
 import com.digitalbooks.dto.ReaderVo;
 import com.digitalbooks.model.UserVo;
+import com.digitalbooks.payload.response.MessageResponse;
 import com.digitalbooks.service.UserService;
 import com.digitalbooks.utility.UserManagmentException;
 
@@ -113,9 +114,11 @@ public class UserController {
 	public ResponseEntity<?> createBook(@RequestBody BookDto book, @PathVariable String authorId)
 			throws UserManagmentException {
 		try {
-			Object bookvo = userService.createBook(book, authorId);
+			ResponseEntity<MessageResponse> bookvo = userService.createBook(book, authorId);
+			MessageResponse msgRes=bookvo.getBody();
+			System.out.println(bookvo);
 			if (bookvo != null)
-				return ResponseEntity.status(200).body(book);
+				return ResponseEntity.status(200).body(msgRes.getMessage());
 			else
 				throw new UserManagmentException(" cant create Book--->");
 		} catch (Exception e) {
