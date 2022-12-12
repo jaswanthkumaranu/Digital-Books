@@ -11,10 +11,10 @@ export class BoardModeratorComponent implements OnInit {
   create: any = {
     bookTitle: null,
     publisher: null,
-    category:null,
-    price:[(0)],
-    isActive:null,
-    bookContent:null
+    category: null,
+    price: [(0)],
+    isActive: null,
+    bookContent: null
   };
   errorMessage = '';
   isCreatedIn = false;
@@ -34,18 +34,23 @@ export class BoardModeratorComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const {  bookTitle,category, price,publisher,isActive,bookContent } = this.create;
+    const { bookTitle, category, price, publisher, isActive, bookContent } = this.create;
     this.userService.create(this.create).subscribe(
       data => {
         console.log(data);
-
-        this.isCreatedIn = true;
-        this.isCreatedFailed = false;
+        if (data == 'Book with same title exists!') {
+          this.errorMessage = data;
+          this.isCreatedFailed = true;
+        }
+        else {
+          this.isCreatedIn = true;
+          this.isCreatedFailed = false;
+        }
       },
       err => {
         this.errorMessage = err.error.message;
         this.isCreatedFailed = true;
-        
+
       }
     );
 

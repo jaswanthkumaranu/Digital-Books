@@ -10,7 +10,7 @@ export class HomeComponent implements OnInit {
   content?: string;
   errorMessage = '';
 
-  search: any = {
+  form: any = {
     title: null,
     author: null,
     publisher: null,
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
     );
   }
   onSubmit(): void {
-    const { category, title, author,price,publisher } = this.search;
+    const { category, title, author,price,publisher } = this.form;
     this.userService.search(category, title, author,price,publisher).subscribe(
       data => {
         console.log(data);

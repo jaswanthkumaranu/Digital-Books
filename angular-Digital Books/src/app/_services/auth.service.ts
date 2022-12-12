@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 const AUTH_API = 'http://localhost:8082/api/auth/';
 
+
+
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -21,12 +23,13 @@ export class AuthService {
     }, httpOptions);
   }
 
-  register(username: string, email: string, password: string,roles:string[]): Observable<any> {
+  register(username: string, email: string, password: string,role:Array<String>): Observable<any> {
+
     return this.http.post(AUTH_API + 'signup', {
       username,
       email,
       password,
-      roles
+      role
     }, httpOptions);
   }
 }
