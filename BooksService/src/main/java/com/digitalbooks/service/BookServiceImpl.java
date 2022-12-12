@@ -54,6 +54,7 @@ public class BookServiceImpl implements BookService {
 		book.setCreatedDt(new Date());
 		if(book.getBookCode()==null||book.getBookCode().equalsIgnoreCase(""))
 			book.setBookCode(book.getBookTitle().substring(0, 3));
+		bookRepository.save(book);
 		System.out.println("calling book service"+book.getBookTitle());
 		}catch(Exception e) {
 			return new MessageResponse("Error: " + e.getMessage());
