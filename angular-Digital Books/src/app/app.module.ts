@@ -14,6 +14,8 @@ import { BoardModeratorComponent } from './board-author/board-moderator.componen
 import { BoardUserComponent } from './board-user/board-user.component';
 
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
+import { BoardReaderComponent } from './board-reader/board-reader.component';
+import { BookContentComponent } from './book-content/book-content.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { authInterceptorProviders } from './_helpers/auth.interceptor';
     ProfileComponent,
     BoardAdminComponent,
     BoardModeratorComponent,
-    BoardUserComponent
+    BoardUserComponent,
+    BoardReaderComponent,
+    BookContentComponent
    
   ],
   imports: [

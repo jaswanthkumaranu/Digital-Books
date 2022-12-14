@@ -11,7 +11,7 @@
     #f="ngForm"
     novalidate
   >
-<h1>Search Book</h1>
+<h1 class="p-2">Search Book</h1>
 <div class="row p-3" >
   <div class="col-md-4">
     <div class="form-group">
@@ -135,6 +135,37 @@
 </div>
 </div>
  </form>
+ <h3>Search Result</h3>
+ <ul 
+  *ngFor="let b of this.bookList">
+  <li class="row justify-content-between align-items-center">
+    <div>
+      <p>{{b.bookTitle}}-{{b.publisher}}</p>
+      <p>{{b.bookTitle}}-{{b.publisher}}</p>
+      <p>{{b.bookTitle}}-{{b.publisher}}</p>
+      <p>{{b.bookTitle}}-{{b.publisher}}</p>
+    </div>
+    
+    <div>
+    <button class="btn btn-danger">Subscribe</button>
+    </div>
+    
+
+  </li>
+
+
+
+
+   <!-- <li>book Title:{{b.bookTitle}} Price:{{b.price}}</li>
+   <input type="hidden" #bookId value="{{b.bookId}}"/>
+   <div class=" col-md-3">
+   <button class="btn btn-primary btn-block"
+   (click)="subscribe(bookId.value)" 
+   *ngIf="this.role === 'ROLE_READER'">Subscribe</button></div>
+    -->
+
+
+ </ul>
 
 </div>
 </div>
