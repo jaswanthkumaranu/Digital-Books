@@ -9,6 +9,10 @@ import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_BOOK;
 import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_SUBSCRIPTION_FOR_THE_BOOK_WITH_ID;
 import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_SUBSCRIPTION_ID;
 import static com.digitalbooks.utility.BooksConstant.DATA_MISSING;
+import static com.digitalbooks.utility.BooksConstant.SUBSCRIPTION_CANCLE_SUCESSFULLY;
+import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_BLOCKED;
+import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_SUBSCRIBED;
+import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_UNBLOCKED;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.digitalbooks.dto.ReaderVo;
@@ -42,21 +47,21 @@ public class BookServiceImpl implements BookService {
 			return new MessageResponse("Book with same title exists!");
 		}
 		try {
-		book.setCreatedDt(new Date());
-		if (book.getBlock() == null || book.getBlock() > 1)
-			book.setBlock(0L);
-		book.setSubscriptionCount(0L);
-		if (book.getPrice() == null || book.getPrice() < 0)
-			book.setPrice(0.0);
-		book.setBookId(0L);
-		book.setCrtUsr(Long.parseLong(authorId));
-		book.setAuthorId(authorId);
-		book.setCreatedDt(new Date());
-		if(book.getBookCode()==null||book.getBookCode().equalsIgnoreCase(""))
-			book.setBookCode(book.getBookTitle().substring(0, 3));
-		bookRepository.save(book);
-		System.out.println("calling book service"+book.getBookTitle());
-		}catch(Exception e) {
+			book.setCreatedDt(new Date());
+			if (book.getBlock() == null || book.getBlock() > 1)
+				book.setBlock(0L);
+			book.setSubscriptionCount(0L);
+			if (book.getPrice() == null || book.getPrice() < 0)
+				book.setPrice(0.0);
+			book.setBookId(0L);
+			book.setCrtUsr(Long.parseLong(authorId));
+			book.setAuthorId(authorId);
+			book.setCreatedDt(new Date());
+			if (book.getBookCode() == null || book.getBookCode().equalsIgnoreCase(""))
+				book.setBookCode(book.getBookTitle().substring(0, 3));
+			bookRepository.save(book);
+			System.out.println("calling book service" + book.getBookTitle());
+		} catch (Exception e) {
 			return new MessageResponse("Error: " + e.getMessage());
 		}
 		return new MessageResponse("Book added successfully!");
@@ -129,14 +134,14 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public boolean subscribeBook(String bookId, ReaderVo reader) throws BookServiceExceptionHandler {
+	public MessageResponse subscribeBook(String bookId, ReaderVo reader) throws BookServiceExceptionHandler {
 		if (bookId != null && !bookId.equalsIgnoreCase("")) {
 			Optional<BookVo> book = bookRepository.findById(Long.parseLong(bookId));
 			if (!book.isEmpty()) {
 				List<SubscribeBookVo> books = subscribeBookRepository.findByReaderId(reader.getReaderId());
 				boolean notsubscribe = true;
 				for (SubscribeBookVo subbook : books) {
-					if (subbook.getBookId() == Long.parseLong(bookId)&& subbook.getIsActive()==1L) {
+					if (subbook.getBookId() == Long.parseLong(bookId) && subbook.getIsActive() == 1L) {
 						notsubscribe = false;
 					}
 				}
@@ -154,22 +159,22 @@ public class BookServiceImpl implements BookService {
 					book.get().setSubscriptionCount(count + 1);
 					bookRepository.save(book.get());
 
-					return true;
+					return  new MessageResponse(SUCCESSFULLY_SUBSCRIBED);
 				} else {
-					throw new BookServiceExceptionHandler(BOOK_IS_ALREADY_SUBSCRIBED + bookId);
+					return new MessageResponse(BOOK_IS_ALREADY_SUBSCRIBED + bookId);
 				}
 			} else {
-				throw new BookServiceExceptionHandler(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
+				return new MessageResponse(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
 			}
 
 		} else {
-			throw new BookServiceExceptionHandler(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
+			return new MessageResponse(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
 		}
 
 	}
 
 	@Override
-	public boolean blockOrUnBlockBookByAuthor(String authorId, String bookId, String block)
+	public MessageResponse blockOrUnBlockBookByAuthor(String authorId, String bookId, String block)
 			throws BookServiceExceptionHandler {
 		if (bookId != null && !bookId.equalsIgnoreCase("")) {
 			Optional<BookVo> book = bookRepository.findById(Long.parseLong(bookId));
@@ -179,7 +184,10 @@ public class BookServiceImpl implements BookService {
 				else
 					book.get().setBlock(0L);
 				bookRepository.save(book.get());
-				return true;
+				if (block.equalsIgnoreCase("Yes"))
+					return new MessageResponse(SUCCESSFULLY_BLOCKED);
+				else
+					return new MessageResponse(SUCCESSFULLY_UNBLOCKED);
 			} else {
 				throw new BookServiceExceptionHandler(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
 			}
@@ -190,7 +198,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public boolean cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId)
+	public MessageResponse cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId)
 			throws BookServiceExceptionHandler {
 
 		if (subscriptionId != null && !subscriptionId.equalsIgnoreCase("")) {
@@ -211,16 +219,16 @@ public class BookServiceImpl implements BookService {
 						bookRepository.save(book.get());
 					}
 
-					return true;
+					return new MessageResponse(SUBSCRIPTION_CANCLE_SUCESSFULLY);
 				} else {
-					throw new BookServiceExceptionHandler(CAN_NOT_CANCEL_SUBSCRIPTION_AFTER_24_HOURS + subscriptionId);
+					return new MessageResponse(CAN_NOT_CANCEL_SUBSCRIPTION_AFTER_24_HOURS + subscriptionId);
 				}
 			} else {
-				throw new BookServiceExceptionHandler(ACCESS_DENIED + subscriptionId);
+				return new MessageResponse(ACCESS_DENIED + subscriptionId);
 			}
 
 		} else {
-			throw new BookServiceExceptionHandler(CAN_NOT_FIND_THE_SUBSCRIPTION_FOR_THE_BOOK_WITH_ID + subscriptionId);
+			return new MessageResponse(CAN_NOT_FIND_THE_SUBSCRIPTION_FOR_THE_BOOK_WITH_ID + subscriptionId);
 		}
 
 	}
@@ -232,8 +240,8 @@ public class BookServiceImpl implements BookService {
 		if (subscribeBooksDtls != null && !subscribeBooksDtls.isEmpty()) {
 			List<Long> bookIds = new ArrayList<>();
 			for (SubscribeBookVo subscribeBook : subscribeBooksDtls) {
-				if(subscribeBook.getIsActive()==1L)
-				bookIds.add(subscribeBook.getBookId());
+				if (subscribeBook.getIsActive() == 1L)
+					bookIds.add(subscribeBook.getBookId());
 
 			}
 
@@ -258,7 +266,13 @@ public class BookServiceImpl implements BookService {
 					throw new BookServiceExceptionHandler(CAN_NOT_FIND_THE_BOOK + subscriptionId);
 				}
 			} else {
-				throw new BookServiceExceptionHandler(CAN_NOT_FIND_THE_SUBSCRIPTION_ID + subscriptionId);
+				Optional<BookVo> opBook=bookRepository.findById(Long.parseLong(subscriptionId));
+				if (!opBook.isEmpty()) {
+					return opBook.get();
+
+				} else {
+					throw new BookServiceExceptionHandler(CAN_NOT_FIND_THE_BOOK + subscriptionId);
+				}
 			}
 
 		} else {

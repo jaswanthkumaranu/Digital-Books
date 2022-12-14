@@ -15,11 +15,11 @@ public interface BookService {
 
 	List<BookVo> searchBook(String category, String title, String author, String price, String publisher);
 
-	boolean subscribeBook(String bookId, ReaderVo reader) throws BookServiceExceptionHandler;
+	MessageResponse subscribeBook(String bookId, ReaderVo reader) throws BookServiceExceptionHandler;
 
-	boolean blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) throws BookServiceExceptionHandler;
+	MessageResponse blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) throws BookServiceExceptionHandler;
 
-	boolean cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) throws BookServiceExceptionHandler;
+	MessageResponse cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) throws BookServiceExceptionHandler;
 
 	List<BookVo> getAllSubscribeBooksByReader(String emailId);
 

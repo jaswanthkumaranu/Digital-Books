@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbooks.dto.ReaderVo;
 import com.digitalbooks.model.BookVo;
+import com.digitalbooks.response.MessageResponse;
 import com.digitalbooks.service.BookService;
 import com.digitalbooks.utility.BookServiceExceptionHandler;
 
@@ -75,14 +76,10 @@ public class BookController {
 	}
 
 	@PostMapping("/{bookId}/subscribe")
-	public ResponseEntity<String> subscribeBook(@RequestBody ReaderVo reader, @PathVariable String bookId)
+	public ResponseEntity<?> subscribeBook(@RequestBody ReaderVo reader, @PathVariable String bookId)
 			throws BookServiceExceptionHandler {
 		try {
-			boolean sub = bookService.subscribeBook(bookId, reader);
-			if (sub)
-				return ResponseEntity.status(200).body(SUCCESSFULLY_SUBSCRIBED);
-			else
-				throw new BookServiceExceptionHandler(NOT_SUSBSCRIBED);
+			return ResponseEntity.ok(bookService.subscribeBook(bookId, reader));
 
 		} catch (Exception e) {
 			throw new BookServiceExceptionHandler(NOT_SUSBSCRIBED, e);
@@ -90,7 +87,7 @@ public class BookController {
 	}
 
 	@GetMapping("/readers/{emailId}/books")
-	public ResponseEntity<List<BookVo>> getAllSubscribeBooksByReader(@PathVariable String emailId)
+	public ResponseEntity<?> getAllSubscribeBooksByReader(@PathVariable String emailId)
 			throws BookServiceExceptionHandler {
 		if (emailId != null && !emailId.equalsIgnoreCase("")) {
 			try {
@@ -105,7 +102,7 @@ public class BookController {
 	}
 
 	@GetMapping("/readers/{emailId}/books/{subscriptionId}")
-	public ResponseEntity<List<BookVo>> getSubscribeBookByReaderEmailId(@PathVariable String emailId,
+	public ResponseEntity<?> getSubscribeBookByReaderEmailId(@PathVariable String emailId,
 			@PathVariable String subscriptionId) throws BookServiceExceptionHandler {
 		if (emailId != null && !emailId.equalsIgnoreCase("")) {
 			try {
@@ -122,12 +119,12 @@ public class BookController {
 	}
 
 	@GetMapping("/readers/{emailId}/books/{subscriptionId}/read")
-	public ResponseEntity<String> getSubscribeBookContentByReaderEmailId(@PathVariable String emailId,
+	public ResponseEntity<?> getSubscribeBookContentByReaderEmailId(@PathVariable String emailId,
 			@PathVariable String subscriptionId) throws BookServiceExceptionHandler {
 		if (emailId != null && !emailId.equalsIgnoreCase("")) {
 			try {
 				BookVo subscribBookByReader = bookService.getSubscribeBookByReader(emailId, subscriptionId);
-				return ResponseEntity.status(200).body(subscribBookByReader.getBookContent());
+				return ResponseEntity.ok( new MessageResponse(subscribBookByReader.getBookContent()));
 			} catch (Exception e) {
 				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
 			}
@@ -137,36 +134,24 @@ public class BookController {
 	}
 
 	@PostMapping("/readers/{readerId}/books/{subscriptionId}/cancel-subscription")
-	public ResponseEntity<String> cancleSubscriptionWithIn24Hours(@PathVariable String readerId,
+	public ResponseEntity<?> cancleSubscriptionWithIn24Hours(@PathVariable String readerId,
 			@PathVariable String subscriptionId) throws BookServiceExceptionHandler {
 		if (readerId != null && !readerId.equalsIgnoreCase("") && !subscriptionId.equalsIgnoreCase("")
 				&& subscriptionId != null) {
-			boolean cancle = bookService.cancleSubscriptionWithIn24Hours(readerId, subscriptionId);
-			if (cancle) {
-				return ResponseEntity.status(200).body(SUBSCRIPTION_CANCLE_SUCESSFULLY);
-			} else {
-				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
-			}
+			return ResponseEntity.ok(bookService.cancleSubscriptionWithIn24Hours(readerId, subscriptionId));
+
 		} else {
-			return ResponseEntity.status(400).body(DATA_MISSING);
+			return ResponseEntity.ok(DATA_MISSING);
 		}
 	}
 
 	@PostMapping("author/{authorId}/books/{bookId}/block={block}")
-	public ResponseEntity<String> blockOrUnBlockBookByAuthor(@PathVariable(value = "authorId") String authorId,
+	public ResponseEntity<?> blockOrUnBlockBookByAuthor(@PathVariable(value = "authorId") String authorId,
 			@PathVariable(value = "bookId") String bookId, @PathVariable(value = "block") String block)
 			throws BookServiceExceptionHandler {
 		if (block != null && !block.equalsIgnoreCase("") && authorId != null && bookId != null) {
 			try {
-				boolean update = bookService.blockOrUnBlockBookByAuthor(authorId, bookId, block);
-				if (update) {
-					if (block.equalsIgnoreCase("Yes"))
-						return ResponseEntity.status(200).body(SUCCESSFULLY_BLOCKED);
-					else
-						return ResponseEntity.status(200).body(SUCCESSFULLY_UNBLOCKED);
-				} else {
-					throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
-				}
+				return ResponseEntity.ok(bookService.blockOrUnBlockBookByAuthor(authorId, bookId, block));
 			} catch (Exception e) {
 				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME, e);
 			}
