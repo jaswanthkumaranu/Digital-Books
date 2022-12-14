@@ -59,9 +59,9 @@ public class RestClientRest {
 		
 	}
 
-	public ResponseEntity<String> subscribeBook(String url, String bookId, ReaderVo reader) {
+	public ResponseEntity<MessageResponse> subscribeBook(String url, String bookId, ReaderVo reader) {
 
-	       String result = restTemplate.postForObject(BOOK_URL+url, reader, String.class);
+		MessageResponse result = restTemplate.postForObject(BOOK_URL+url, reader, MessageResponse.class);
 	        return ResponseEntity.ok(result);
 	}
 
@@ -76,19 +76,19 @@ public class RestClientRest {
 		 return ResponseEntity.ok(result);
 	}
 
-	public ResponseEntity<String> getSubscribeBookByReader(String url) {
-		 String result = restTemplate.getForObject(BOOK_URL+url,  String.class);
+	public ResponseEntity<MessageResponse> getSubscribeBookByReader(String url) {
+		MessageResponse result = restTemplate.getForObject(BOOK_URL+url,  MessageResponse.class);
 	        return ResponseEntity.ok(result);
 	}
 
-	public ResponseEntity<String> cancleSubscriptionWithIn24Hours(String url,String subscriptionId) {
-		 String result = restTemplate.postForObject(BOOK_URL+url,  subscriptionId,String.class);
+	public ResponseEntity<MessageResponse> cancleSubscriptionWithIn24Hours(String url,String subscriptionId) {
+		MessageResponse result = restTemplate.postForObject(BOOK_URL+url,  subscriptionId,MessageResponse.class);
 	        return ResponseEntity.ok(result);
 	}
 
-	public ResponseEntity<String> blockOrUnBlockBookByAuthor(String url, String authorId, String bookId,
+	public ResponseEntity<MessageResponse> blockOrUnBlockBookByAuthor(String url, String authorId, String bookId,
 			String block) {
-		 String result = restTemplate.postForObject(BOOK_URL+url,null, String.class,authorId,bookId,block);
+		MessageResponse result = restTemplate.postForObject(BOOK_URL+url,null, MessageResponse.class,authorId,bookId,block);
 	        return ResponseEntity.ok(result);
 	}
 

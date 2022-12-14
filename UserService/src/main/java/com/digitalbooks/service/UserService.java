@@ -141,7 +141,7 @@ public class UserService implements UserDetailsService {
 		UserVo user=getUserById(Long.parseLong(reader.getReaderId()));
 		if(user!=null&&user.getEmailId().equalsIgnoreCase(reader.getReaderEmail())) {
 		
-		ResponseEntity<String> result = restClient.subscribeBook(bookId + "/subscribe", bookId, reader);
+		ResponseEntity<MessageResponse> result = restClient.subscribeBook(bookId + "/subscribe", bookId, reader);
 		System.out.println("subscribe book status code" + result.getStatusCode());
 		if (result.getStatusCode().equals(HttpStatus.OK)) {
 			subscribe=true;
@@ -186,29 +186,18 @@ public class UserService implements UserDetailsService {
 		
 	}
 
-	public String getSubscribeBookByReader(String emailId, String subscriptionId) {
-		
-		String content="";
-		ResponseEntity<String> result = restClient.getSubscribeBookByReader("readers/"+emailId + "/books/"+subscriptionId+"/read");
-		if(result.getStatusCode().equals(HttpStatus.OK))
-			content=result.getBody();
-		
-		return content;
+	public ResponseEntity<MessageResponse> getSubscribeBookByReader(String emailId, String subscriptionId) {
+		ResponseEntity<MessageResponse> result = restClient.getSubscribeBookByReader("readers/"+emailId + "/books/"+subscriptionId+"/read");
+		return result;
 	}
 
-	public boolean cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) {
-		boolean cancleSub=false;
-		ResponseEntity<String> result = restClient.cancleSubscriptionWithIn24Hours("readers/"+readerId + "/books/"+subscriptionId+"/cancel-subscription",subscriptionId);
-		if(result.getStatusCode().equals(HttpStatus.OK))
-			cancleSub=true;
-		return cancleSub;
+	public ResponseEntity<MessageResponse> cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) {
+		ResponseEntity<MessageResponse> result = restClient.cancleSubscriptionWithIn24Hours("readers/"+readerId + "/books/"+subscriptionId+"/cancel-subscription",subscriptionId);
+		return result;
 	}
 
-	public boolean blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) {
-		boolean blockOrUnBlock=false;
-		ResponseEntity<String> result = restClient.blockOrUnBlockBookByAuthor("author/{authorId}/books/{bookId}/block={block}",authorId,bookId,block);
-		if(result.getStatusCode().equals(HttpStatus.OK))
-			blockOrUnBlock=true;
-		return blockOrUnBlock;
+	public ResponseEntity<MessageResponse> blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) {
+		ResponseEntity<MessageResponse> result = restClient.blockOrUnBlockBookByAuthor("author/{authorId}/books/{bookId}/block={block}",authorId,bookId,block);
+		return result;
 	}
 }

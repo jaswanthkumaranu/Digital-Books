@@ -78,18 +78,18 @@ public class AuthController {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
 		}
 		if (signUpRequest != null && signUpRequest.getRole() != null && !signUpRequest.getRole().isEmpty()) {
-			for (String s : signUpRequest.getRole()) {
+			String s=signUpRequest.getRole();
 				if (!s.equalsIgnoreCase("admin") && !s.equalsIgnoreCase("user") && !s.equalsIgnoreCase("author")
 						&& !s.equalsIgnoreCase("reader")) {
 					return ResponseEntity.badRequest().body(new MessageResponse("Error: Role is Not Valid!"));
 				}
-			}
+			
 		}
 		// Create new user's account
 		UserVo user = new UserVo(signUpRequest.getUsername(), signUpRequest.getEmail(),
 				encoder.encode(signUpRequest.getPassword()));
 
-		Set<String> strRoles = signUpRequest.getRole();
+		String strRoles = signUpRequest.getRole();
 		Set<UserRoleVo> roles = new HashSet<>();
 
 		if (strRoles == null) {
@@ -97,8 +97,8 @@ public class AuthController {
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 			roles.add(userRole);
 		} else {
-			strRoles.forEach(role -> {
-				switch (role) {
+//			strRoles.forEach(role -> {
+				switch (strRoles) {
 				case "admin":
 					UserRoleVo adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -122,7 +122,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(userRole);
 				}
-			});
+//			});
 		}
 
 		user.setRoles(roles);

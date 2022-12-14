@@ -42,6 +42,12 @@ import com.digitalbooks.utility.UserManagmentException;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	
+	@GetMapping("/all")
+	public ResponseEntity<?> getContent() throws Exception{
+		
+		return  ResponseEntity.status(200).body("Welcome to Digital Books");
+	}
 
 	@GetMapping(GET_ALL_USER)
 	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
@@ -200,11 +206,12 @@ public class UserController {
 	
 	
 	@GetMapping("/readers/{emailId}/books/{subscriptionId}/read")
-	public ResponseEntity<String> getSubscribeBookContentByReaderEmailId(@PathVariable String emailId,@PathVariable String subscriptionId) throws UserManagmentException{
+	public ResponseEntity<?> getSubscribeBookContentByReaderEmailId(@PathVariable String emailId,@PathVariable String subscriptionId) throws UserManagmentException{
 		if(emailId!=null&&!emailId.equalsIgnoreCase("")) {
 			try {
-				String bookContent= userService.getSubscribeBookByReader(emailId,subscriptionId);
-			return ResponseEntity.status(200).body(bookContent);
+				ResponseEntity<MessageResponse> bookContent= userService.getSubscribeBookByReader(emailId,subscriptionId);
+				MessageResponse msgRes=bookContent.getBody();
+			return ResponseEntity.status(200).body(msgRes);
 			}catch(Exception e) {
 				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
 			}
@@ -216,15 +223,11 @@ public class UserController {
 	
 	
 	@PostMapping("/readers/{readerId}/books/{subscriptionId}/cancel-subscription")
-	public ResponseEntity<String>cancleSubscriptionWithIn24Hours(@PathVariable String readerId,@PathVariable String subscriptionId ) throws UserManagmentException{
+	public ResponseEntity<?>cancleSubscriptionWithIn24Hours(@PathVariable String readerId,@PathVariable String subscriptionId ) throws UserManagmentException{
 		if(readerId!=null &&!readerId.equalsIgnoreCase("") && !subscriptionId.equalsIgnoreCase("") &&subscriptionId!=null) {
-			boolean cancle=userService.cancleSubscriptionWithIn24Hours(readerId,subscriptionId);
-			if(cancle) {
-				return ResponseEntity.status(200).body(SUBSCRIPTION_CANCLE_SUCESSFULLY);
-			}
-			else {
-				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
-			}
+			ResponseEntity<MessageResponse> cancle=userService.cancleSubscriptionWithIn24Hours(readerId,subscriptionId);
+			MessageResponse msgRes=cancle.getBody();
+			return ResponseEntity.status(200).body(msgRes);
 		}
 		else {
 			return ResponseEntity.status(400).body(DATA_MISSING);
@@ -232,19 +235,12 @@ public class UserController {
 	}
 	
 	@PostMapping("author/{authorId}/books/{bookId}/block={block}")
-	public ResponseEntity<String> blockOrUnBlockBookByAuthor(@PathVariable(value="authorId") String authorId,@PathVariable(value="bookId") String bookId,@PathVariable(value="block") String block) throws UserManagmentException{
+	public ResponseEntity<?> blockOrUnBlockBookByAuthor(@PathVariable(value="authorId") String authorId,@PathVariable(value="bookId") String bookId,@PathVariable(value="block") String block) throws UserManagmentException{
 		if(block!=null&&!block.equalsIgnoreCase("")&&authorId!=null&&bookId!=null) {
 			try {
-			boolean update=userService.blockOrUnBlockBookByAuthor(authorId,bookId,block);
-			if(update) {
-				if(block.equalsIgnoreCase("Yes"))
-				return ResponseEntity.status(200).body(SUCCESSFULLY_BLOCKED);
-				else
-					return ResponseEntity.status(200).body(SUCCESSFULLY_UNBLOCKED);
-			}
-			else {
-				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
-			}
+			ResponseEntity<MessageResponse> update=userService.blockOrUnBlockBookByAuthor(authorId,bookId,block);
+			MessageResponse msgRes=update.getBody();
+			return ResponseEntity.status(200).body(msgRes);
 			}catch(Exception e) {
 				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME,e);
 			}
