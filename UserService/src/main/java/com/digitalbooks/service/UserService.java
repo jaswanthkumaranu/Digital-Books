@@ -108,16 +108,14 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public Object updateBook(BookDto book, String authorId, String bookId)
-			throws UserManagmentException {
+	public Object updateBook(BookDto book, String authorId, String bookId) throws UserManagmentException {
 		if (book.getPrice() == null || book.getPrice() < 0) {
 			throw new UserManagmentException("Price cant be  Negative or NUll!");
 
 		} else if (book.getBookTitle() == null || book.getBookTitle().equalsIgnoreCase(EMPTY_STRING)) {
 			throw new UserManagmentException("Book Title cant be Empty!");
 		} else {
-			ResponseEntity<?> createdBook = restClient.updateForBook("author/" + authorId + "/books/" + bookId,
-					book);
+			ResponseEntity<?> createdBook = restClient.updateForBook("author/" + authorId + "/books/" + bookId, book);
 			if (createdBook != null) {
 				return createdBook;
 			} else {
@@ -135,69 +133,83 @@ public class UserService implements UserDetailsService {
 		return bookList;
 	}
 
-	public boolean subscribeBook(String bookId, ReaderVo reader) throws NumberFormatException, Exception {
-		boolean subscribe=false;
-		
-		UserVo user=getUserById(Long.parseLong(reader.getReaderId()));
-		if(user!=null&&user.getEmailId().equalsIgnoreCase(reader.getReaderEmail())) {
-		
-		ResponseEntity<MessageResponse> result = restClient.subscribeBook(bookId + "/subscribe", bookId, reader);
-		System.out.println("subscribe book status code" + result.getStatusCode());
-		if (result.getStatusCode().equals(HttpStatus.OK)) {
-			subscribe=true;
-		}
-		}else {
-			 throw  new UserManagmentException("User not valid");
+	public ResponseEntity<MessageResponse> subscribeBook(String bookId, ReaderVo reader)
+			throws NumberFormatException, Exception {
+		ResponseEntity<MessageResponse> result = null;
+
+		UserVo user = getUserById(Long.parseLong(reader.getReaderId()));
+		if (user != null && user.getEmailId().equalsIgnoreCase(reader.getReaderEmail())) {
+			result = restClient.subscribeBook(bookId + "/subscribe", bookId, reader);
+			System.out.println("subscribe book status code" + result.getStatusCode());
 		}
 
-		return subscribe;
+		return result;
 	}
 
 	public List<BookDto> getAllSubscribeBooksByReader(String emailId) throws UserManagmentException {
 		List<BookDto> bookList = null;
-		boolean userExists=userRepository.existsByEmailId(emailId);
-		
-		if(userExists) {
+		boolean userExists = userRepository.existsByEmailId(emailId);
+
+		if (userExists) {
 			ResponseEntity<?> books = restClient.getAllSubscribeBooksByReader("readers/{emailId}/books", emailId);
-			
+
 			if (books.getStatusCode().equals(HttpStatus.OK))
 				bookList = (List<BookDto>) books.getBody();
-		}
-		else {
+		} else {
 			throw new UserManagmentException("User Not Valid..!");
 		}
-		
+
 		return bookList;
 	}
 
-	public BookDto getSubscribeBookByReaderEmailId(String emailId, String subscriptionId) throws UserManagmentException {
+	public BookDto getSubscribeBookByReaderEmailId(String emailId, String subscriptionId)
+			throws UserManagmentException {
 		List<BookDto> bookList = null;
-		boolean userExists=userRepository.existsByEmailId(emailId);
-		if(userExists) {
-			ResponseEntity<?> books = restClient.getSubscribeBookByReaderEmailId("readers/"+emailId+"/books/"+subscriptionId, emailId,subscriptionId);
-			
+		if (userRepository.existsByEmailId(emailId)) {
+			ResponseEntity<?> books = restClient.getSubscribeBookByReaderEmailId(
+					"readers/" + emailId + "/books/" + subscriptionId, emailId, subscriptionId);
+
 			if (books.getStatusCode().equals(HttpStatus.OK))
-				bookList =  (List<BookDto>)  books.getBody();
-		}
-		else {
+				bookList = (List<BookDto>) books.getBody();
+		} else {
 			throw new UserManagmentException("User Not Valid..!");
 		}
 		return bookList.get(0);
-		
+
 	}
 
 	public ResponseEntity<MessageResponse> getSubscribeBookByReader(String emailId, String subscriptionId) {
-		ResponseEntity<MessageResponse> result = restClient.getSubscribeBookByReader("readers/"+emailId + "/books/"+subscriptionId+"/read");
+		ResponseEntity<MessageResponse> result = restClient
+				.getSubscribeBookByReader("readers/" + emailId + "/books/" + subscriptionId + "/read");
 		return result;
 	}
 
 	public ResponseEntity<MessageResponse> cancleSubscriptionWithIn24Hours(String readerId, String subscriptionId) {
-		ResponseEntity<MessageResponse> result = restClient.cancleSubscriptionWithIn24Hours("readers/"+readerId + "/books/"+subscriptionId+"/cancel-subscription",subscriptionId);
+		ResponseEntity<MessageResponse> result = restClient.cancleSubscriptionWithIn24Hours(
+				"readers/" + readerId + "/books/" + subscriptionId + "/cancel-subscription", subscriptionId);
 		return result;
 	}
 
-	public ResponseEntity<MessageResponse> blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) {
-		ResponseEntity<MessageResponse> result = restClient.blockOrUnBlockBookByAuthor("author/{authorId}/books/{bookId}/block={block}",authorId,bookId,block);
+	public ResponseEntity<MessageResponse> blockOrUnBlockBookByAuthor(String authorId, String bookId, String block) throws UserManagmentException {
+		ResponseEntity<MessageResponse> result =null;
+		if (userRepository.existsByUserId(Long.parseLong(authorId))) {
+		 result = restClient
+				.blockOrUnBlockBookByAuthor("author/{authorId}/books/{bookId}/block={block}", authorId, bookId, block);
+		}else {
+			throw new UserManagmentException("User Not Valid..!");
+		}
 		return result;
+	}
+
+	public List<BookDto> getAuthorCreatedBooks(String authorId) throws UserManagmentException {
+		List<BookDto> bookList = null;
+		if (userRepository.existsByUserId(Long.parseLong(authorId))) {
+			ResponseEntity<?> books = restClient.getAuthorCreatedBooks("author/" + authorId + "/books", authorId);
+			if (books.getStatusCode().equals(HttpStatus.OK))
+				bookList = (List<BookDto>) books.getBody();
+		} else {
+			throw new UserManagmentException("User Not Valid..!");
+		}
+		return bookList;
 	}
 }

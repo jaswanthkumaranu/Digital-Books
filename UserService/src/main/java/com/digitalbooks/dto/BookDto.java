@@ -1,5 +1,6 @@
 package com.digitalbooks.dto;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class BookDto {
@@ -19,6 +20,7 @@ public class BookDto {
 	private Date createdDt;
 	private Long block;
 	private Long subscriptionCount;
+	private Long subscriptionId;
 
 	public Long getBookId() {
 		return bookId;
@@ -148,20 +150,28 @@ public class BookDto {
 		this.subscriptionCount = subscriptionCount;
 	}
 
+	public Long getSubscriptionId() {
+		return subscriptionId;
+	}
+
+	public void setSubscriptionId(Long subscriptionId) {
+		this.subscriptionId = subscriptionId;
+	}
+
 	@Override
 	public String toString() {
 		return "BookDto [bookId=" + bookId + ", bookTitle=" + bookTitle + ", bookCode=" + bookCode + ", authorId="
 				+ authorId + ", price=" + price + ", category=" + category + ", publisher=" + publisher + ", logo="
-				+ logo + ", audiourl=" + audiourl + ", bookContent=" + bookContent + ", isActive=" + isActive
-				+ ", updatedDt=" + updatedDt + ", crtUsr=" + crtUsr + ", createdDt=" + createdDt + ", block=" + block
-				+ ", subscriptionCount=" + subscriptionCount + "]";
+				+ Arrays.toString(logo) + ", audiourl=" + audiourl + ", bookContent=" + bookContent + ", isActive="
+				+ isActive + ", updatedDt=" + updatedDt + ", crtUsr=" + crtUsr + ", createdDt=" + createdDt + ", block="
+				+ block + ", subscriptionCount=" + subscriptionCount + ", subscriptionId=" + subscriptionId + "]";
 	}
 
 	public BookDto(Long bookId, String bookTitle, String bookCode, String authorId, Double price, String category,
 			String publisher, Byte[] logo, String audiourl, String bookContent, Long isActive, Date updatedDt,
-			Long crtUsr, Date createdDt, Long block, Long subscriptionCount) {
+			Long crtUsr, Date createdDt, Long block, Long subscriptionCount,Long subscriptionId) {
 		this(bookTitle, bookCode, authorId, price, category, publisher, logo, bookContent, audiourl, isActive,
-				updatedDt, crtUsr, createdDt, block, subscriptionCount);
+				updatedDt, crtUsr, createdDt, block, subscriptionCount,subscriptionId);
 		this.bookId = bookId;
 
 	}
@@ -172,7 +182,7 @@ public class BookDto {
 
 	public BookDto(String bookTitle, String bookCode, String authorId, Double price, String category, String publisher,
 			Byte[] logo, String audiourl, String bookContent, Long isActive, Date updatedDt, Long crtUsr,
-			Date createdDt, Long block, Long subscriptionCount) {
+			Date createdDt, Long block, Long subscriptionCount,Long subscriptionId) {
 		super();
 		this.bookTitle = bookTitle;
 		this.bookCode = bookCode;
@@ -189,6 +199,7 @@ public class BookDto {
 		this.createdDt = createdDt;
 		this.block = block;
 		this.subscriptionCount = subscriptionCount;
+		this.subscriptionId=subscriptionId;
 	}
 
 	public BookDto(String bookTitle, String bookCode, String authorId, Double price, String category, String publisher,

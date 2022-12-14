@@ -7,10 +7,6 @@ import static com.digitalbooks.utility.UserRoutings.GET_USER_BY_ID;
 import static com.digitalbooks.utility.UserRoutings.INSERT_USER_DATA;
 import static com.digitalbooks.utility.UserRoutings.NOT_SUSBSCRIBED;
 import static com.digitalbooks.utility.UserRoutings.SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME;
-import static com.digitalbooks.utility.UserRoutings.SUBSCRIPTION_CANCLE_SUCESSFULLY;
-import static com.digitalbooks.utility.UserRoutings.SUCCESSFULLY_BLOCKED;
-import static com.digitalbooks.utility.UserRoutings.SUCCESSFULLY_SUBSCRIBED;
-import static com.digitalbooks.utility.UserRoutings.SUCCESSFULLY_UNBLOCKED;
 import static com.digitalbooks.utility.UserRoutings.UPDATE_USER_DATA;
 import static com.digitalbooks.utility.UserRoutings.USER;
 
@@ -159,14 +155,11 @@ public class UserController {
 		
 	}
 	@PostMapping("/{bookId}/subscribe") 
-	public  ResponseEntity<String> subscribeBook(@RequestBody ReaderVo reader,  @PathVariable String bookId) throws UserManagmentException{
+	public  ResponseEntity<?> subscribeBook(@RequestBody ReaderVo reader,  @PathVariable String bookId) throws UserManagmentException{
 		try {
-			boolean sub= userService.subscribeBook(bookId,reader);
-			if(sub)
-			return ResponseEntity.status(200).body(SUCCESSFULLY_SUBSCRIBED);
-			else
-				throw new UserManagmentException(NOT_SUSBSCRIBED);
-			
+			ResponseEntity<MessageResponse> result = userService.subscribeBook(bookId,reader);
+			MessageResponse msgRes=result.getBody();
+			return ResponseEntity.status(200).body(msgRes);
 		}catch(Exception e) {
 			throw new UserManagmentException(NOT_SUSBSCRIBED,e);
 		}
@@ -180,7 +173,7 @@ public class UserController {
 			List<BookDto> subscribBooksByReader=userService.getAllSubscribeBooksByReader(emailId);
 			return ResponseEntity.status(200).body(subscribBooksByReader);
 			}catch(Exception e) {
-				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
+				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME,e);
 			}
 		}
 		else {
@@ -247,6 +240,20 @@ public class UserController {
 		}
 		else {
 			return ResponseEntity.status(400).body("Data Missing!.. authorId:"+authorId+"bookId:"+bookId+"block:"+block);
+		}
+	}
+	@GetMapping("/author/{authorId}/books")
+	public ResponseEntity<?> getAuthorCreatedBooks(@PathVariable String authorId)
+			throws UserManagmentException {
+		if (authorId != null && !authorId.equalsIgnoreCase("")) {
+			try {
+				List<BookDto> authorCreatedBooks = userService.getAuthorCreatedBooks(authorId);
+				return ResponseEntity.status(200).body(authorCreatedBooks);
+			} catch (Exception e) {
+				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME,e);
+			}
+		} else {
+			throw new UserManagmentException(DATA_MISSING);
 		}
 	}
 

@@ -18,5 +18,6 @@ D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\wtsecurity\WebS
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\model\UserRoleVo.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\dto\BookDto.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\wtsecurity\jwt\AuthTokenFilter.java
+D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\dto\ReaderVo.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\repository\UserRoleRepository.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\utility\UserRoutings.java

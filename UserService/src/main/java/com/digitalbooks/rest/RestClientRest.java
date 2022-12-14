@@ -92,6 +92,11 @@ public class RestClientRest {
 	        return ResponseEntity.ok(result);
 	}
 
+	public ResponseEntity<?> getAuthorCreatedBooks(String url,String authorId) {
+		List<BookDto> result = restTemplate.getForObject(BOOK_URL+url, List.class );
+		 return ResponseEntity.ok(result);
+	}
+
 	
 	
 }

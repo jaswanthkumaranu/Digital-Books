@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: com.digitalbooks.UserManagementApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.053 s <<< FAILURE! - in com.digitalbooks.UserManagementApplicationTests
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.054 s <<< FAILURE! - in com.digitalbooks.UserManagementApplicationTests
 initializationError(com.digitalbooks.UserManagementApplicationTests)  Time elapsed: 0.006 s  <<< ERROR!
 java.lang.Exception: The class com.digitalbooks.UserManagementApplicationTests is not public.
 
