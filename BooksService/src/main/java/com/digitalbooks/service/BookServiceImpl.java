@@ -128,7 +128,11 @@ public class BookServiceImpl implements BookService {
 //			books = bookRepository.findByCategoryAndBookTitleAndAuthorIdAndPrice(category, title, author,
 //					Double.parseDouble(price));
 		}
-
+		for (int i = 0; i < books.size(); i++) {
+			if (books.get(i)!=null&&books.get(i).getBlock()!=null&&books.get(i).getBlock().equals(1L)) {
+				books.remove(i);
+			}
+		}
 		return books;
 
 	}
@@ -159,7 +163,7 @@ public class BookServiceImpl implements BookService {
 					book.get().setSubscriptionCount(count + 1);
 					bookRepository.save(book.get());
 
-					return  new MessageResponse(SUCCESSFULLY_SUBSCRIBED);
+					return new MessageResponse(SUCCESSFULLY_SUBSCRIBED);
 				} else {
 					return new MessageResponse(BOOK_IS_ALREADY_SUBSCRIBED + bookId);
 				}
@@ -179,12 +183,12 @@ public class BookServiceImpl implements BookService {
 		if (bookId != null && !bookId.equalsIgnoreCase("")) {
 			Optional<BookVo> book = bookRepository.findById(Long.parseLong(bookId));
 			if (!book.isEmpty() && book.get().getAuthorId().equalsIgnoreCase(authorId)) {
-				if (block != null && block.equalsIgnoreCase("Yes"))
+				if (block != null && (block.equalsIgnoreCase("Yes") || block.equalsIgnoreCase("0")))
 					book.get().setBlock(1L);
 				else
 					book.get().setBlock(0L);
 				bookRepository.save(book.get());
-				if (block.equalsIgnoreCase("Yes"))
+				if (block.equalsIgnoreCase("Yes") || block.equalsIgnoreCase("0"))
 					return new MessageResponse(SUCCESSFULLY_BLOCKED);
 				else
 					return new MessageResponse(SUCCESSFULLY_UNBLOCKED);
@@ -246,6 +250,13 @@ public class BookServiceImpl implements BookService {
 			}
 
 			books = bookRepository.findAllById(bookIds);
+
+			for (int i = 0; i < books.size(); i++) {
+				for (int j = 0; j < subscribeBooksDtls.size(); j++)
+					if (books.get(i).getBookId().equals(subscribeBooksDtls.get(j).getBookId())) {
+						books.get(i).setSubscriptionId(subscribeBooksDtls.get(j).getSubscribeId());
+					}
+			}
 		}
 
 		return books;
@@ -266,7 +277,7 @@ public class BookServiceImpl implements BookService {
 					throw new BookServiceExceptionHandler(CAN_NOT_FIND_THE_BOOK + subscriptionId);
 				}
 			} else {
-				Optional<BookVo> opBook=bookRepository.findById(Long.parseLong(subscriptionId));
+				Optional<BookVo> opBook = bookRepository.findById(Long.parseLong(subscriptionId));
 				if (!opBook.isEmpty()) {
 					return opBook.get();
 
@@ -287,4 +298,13 @@ public class BookServiceImpl implements BookService {
 		return timeUnit.convert(diffInMillies, timeUnit.MILLISECONDS);
 	}
 
+	@Override
+	public List<BookVo> getAuthorCreatedBooks(String authorId) throws BookServiceExceptionHandler {
+		List<BookVo> books = null;
+		if (bookRepository.existsByAuthorId(authorId)) {
+			books = bookRepository.findByAuthorId(authorId);
+		}
+
+		return books;
+	}
 }

@@ -1,5 +1,6 @@
 package com.digitalbooks.model;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -51,10 +52,9 @@ public class BookVo {
 	private Date createdDt;
 	@Column(name = "block")
 	private Long block;
-//	@Column(name = "subscription")
-//	private Long subscription;
-//	@Column(name = "subscription_dt")
-//	private Date subscriptionDt;
+
+	private Long subscriptionId;
+	
 	@Column(name = "subscription_Count")
 	private Long subscriptionCount;
 
@@ -194,20 +194,31 @@ public class BookVo {
 		this.subscriptionCount = subscriptionCount;
 	}
 
+	
+	public Long getSubscriptionId() {
+		return subscriptionId;
+	}
+
+	public void setSubscriptionId(Long subscriptionId) {
+		this.subscriptionId = subscriptionId;
+	}
+
+	
+
 	@Override
 	public String toString() {
 		return "BookVo [bookId=" + bookId + ", bookTitle=" + bookTitle + ", bookCode=" + bookCode + ", authorId="
 				+ authorId + ", price=" + price + ", category=" + category + ", publisher=" + publisher + ", logo="
-				+ logo + ", audiourl=" + audiourl + ", bookContent=" + bookContent + ", isActive=" + isActive
-				+ ", updatedDt=" + updatedDt + ", crtUsr=" + crtUsr + ", createdDt=" + createdDt + ", block=" + block
-				+ ", subscriptionCount=" + subscriptionCount + "]";
+				+ Arrays.toString(logo) + ", audiourl=" + audiourl + ", bookContent=" + bookContent + ", isActive="
+				+ isActive + ", updatedDt=" + updatedDt + ", crtUsr=" + crtUsr + ", createdDt=" + createdDt + ", block="
+				+ block + ", subscriptionId=" + subscriptionId + ", subscriptionCount=" + subscriptionCount + "]";
 	}
 
 	public BookVo(Long bookId, String bookTitle, String bookCode, String authorId, Double price, String category,
 			String publisher, Byte[] logo, String audiourl, String bookContent, Long isActive, Date updatedDt,
-			Long crtUsr, Date createdDt, Long block, Long subscriptionCount) {
+			Long crtUsr, Date createdDt, Long block, Long subscriptionCount,Long subscriptionId) {
 		this(bookTitle, bookCode, authorId, price, category, publisher, logo, bookContent, audiourl, isActive,
-				updatedDt, crtUsr, createdDt, block, subscriptionCount);
+				updatedDt, crtUsr, createdDt, block, subscriptionCount,subscriptionId);
 		this.bookId = bookId;
 
 	}
@@ -218,7 +229,7 @@ public class BookVo {
 
 	public BookVo(String bookTitle, String bookCode, String authorId, Double price, String category, String publisher,
 			Byte[] logo, String audiourl, String bookContent, Long isActive, Date updatedDt, Long crtUsr,
-			Date createdDt, Long block, Long subscriptionCount) {
+			Date createdDt, Long block, Long subscriptionCount,Long subscripitonId) {
 		super();
 		this.bookTitle = bookTitle;
 		this.bookCode = bookCode;
@@ -235,6 +246,7 @@ public class BookVo {
 		this.createdDt = createdDt;
 		this.block = block;
 		this.subscriptionCount = subscriptionCount;
+		this.subscriptionId=subscripitonId;
 	}
 
 }

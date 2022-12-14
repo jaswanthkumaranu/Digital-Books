@@ -160,5 +160,19 @@ public class BookController {
 					.body("Data Missing!.. authorId:" + authorId + "bookId:" + bookId + "block:" + block);
 		}
 	}
+	@GetMapping("/author/{authorId}/books")
+	public ResponseEntity<?> getAuthorCreatedBooks(@PathVariable String authorId)
+			throws BookServiceExceptionHandler {
+		if (authorId != null && !authorId.equalsIgnoreCase("")) {
+			try {
+				List<BookVo> subscribBooksByReader = bookService.getAuthorCreatedBooks(authorId);
+				return ResponseEntity.status(200).body(subscribBooksByReader);
+			} catch (Exception e) {
+				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
+			}
+		} else {
+			throw new BookServiceExceptionHandler(DATA_MISSING);
+		}
+	}
 
 }

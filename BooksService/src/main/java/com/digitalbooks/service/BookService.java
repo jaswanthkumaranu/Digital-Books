@@ -25,4 +25,6 @@ public interface BookService {
 
 	BookVo getSubscribeBookByReader(String emailId, String subscriptionId) throws BookServiceExceptionHandler;
 
+	List<BookVo> getAuthorCreatedBooks(String authorId) throws BookServiceExceptionHandler;
+
 }
