@@ -48,7 +48,7 @@ public class RestClientRest {
 		return ResponseEntity.ok(result);
 	}
 	public ResponseEntity<?> updateForBook(String url,BookDto book) {
-		List<BookDto> result = restTemplate.postForObject(BOOK_URL+url, book, List.class);
+		MessageResponse result = restTemplate.postForObject(BOOK_URL+url, book, MessageResponse.class);
 		return ResponseEntity.ok(result);
 	}
 	

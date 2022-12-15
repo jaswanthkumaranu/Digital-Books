@@ -256,6 +256,19 @@ public class UserController {
 			throw new UserManagmentException(DATA_MISSING);
 		}
 	}
-
+	@GetMapping("/author/{authorId}/books/{bookId}")
+	public ResponseEntity<?> getAuthorCreatedBook(@PathVariable String authorId,@PathVariable String bookId)
+			throws UserManagmentException {
+		if (authorId != null && !authorId.equalsIgnoreCase("")) {
+			try {
+				List<BookDto> subscribBooksByReader = userService.getAuthorCreatedBook(authorId,bookId);
+				return ResponseEntity.status(200).body(subscribBooksByReader);
+			} catch (Exception e) {
+				throw new UserManagmentException(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
+			}
+		} else {
+			throw new UserManagmentException(DATA_MISSING);
+		}
+	}
 	
 }

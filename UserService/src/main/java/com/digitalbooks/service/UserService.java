@@ -212,4 +212,16 @@ public class UserService implements UserDetailsService {
 		}
 		return bookList;
 	}
+
+	public List<BookDto> getAuthorCreatedBook(String authorId, String bookId) throws UserManagmentException {
+		List<BookDto> bookList = null;
+		if (userRepository.existsByUserId(Long.parseLong(authorId))) {
+			ResponseEntity<?> books = restClient.getAuthorCreatedBooks("author/" + authorId + "/books/"+bookId, null);
+			if (books.getStatusCode().equals(HttpStatus.OK))
+				bookList = (List<BookDto>) books.getBody();
+		} else {
+			throw new UserManagmentException("User Not Valid..!");
+		}
+		return bookList;
+	}
 }
