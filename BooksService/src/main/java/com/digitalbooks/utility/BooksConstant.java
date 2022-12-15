@@ -21,7 +21,7 @@ public class BooksConstant {
 	public static final String AUTHOR_ID_IS_NOT_MATCHING_WITH_THIS_BOOK = "Author Id is not matching with this book!!!";
 	public static final String SUCCESSFULLY_SUBSCRIBED = "Successfully Subscribed...";
 	public static final String NOT_SUSBSCRIBED = "Not Susbscribed!!!";
-	public static final String SUBSCRIPTION_CANCLE_SUCESSFULLY = "Subscription Cancle Sucessfully...";
+	public static final String SUBSCRIPTION_CANCLE_SUCESSFULLY = "Subscription Cancel Sucessfully...";
 	public static final String SUCCESSFULLY_BLOCKED = "Successfully Blocked...";
 	public static final String SUCCESSFULLY_UNBLOCKED = "Successfully Unblocked...";
 	public static final String SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME = "Something went wrong plese try after some time!!!";

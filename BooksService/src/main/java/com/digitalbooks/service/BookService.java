@@ -11,7 +11,7 @@ public interface BookService {
 
 	MessageResponse createBook(BookVo book, String authorId);
 
-	BookVo updateBook(BookVo book, String authorId,String bookId) throws BookServiceExceptionHandler;
+	MessageResponse updateBook(BookVo book, String authorId,String bookId) throws BookServiceExceptionHandler;
 
 	List<BookVo> searchBook(String category, String title, String author, String price, String publisher);
 
@@ -26,5 +26,7 @@ public interface BookService {
 	BookVo getSubscribeBookByReader(String emailId, String subscriptionId) throws BookServiceExceptionHandler;
 
 	List<BookVo> getAuthorCreatedBooks(String authorId) throws BookServiceExceptionHandler;
+
+	List<BookVo> getAuthorCreatedBook(String authorId, String bookId) throws BookServiceExceptionHandler;
 
 }

@@ -3,10 +3,6 @@ package com.digitalbooks.controller;
 import static com.digitalbooks.utility.BooksConstant.DATA_MISSING;
 import static com.digitalbooks.utility.BooksConstant.NOT_SUSBSCRIBED;
 import static com.digitalbooks.utility.BooksConstant.SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME;
-import static com.digitalbooks.utility.BooksConstant.SUBSCRIPTION_CANCLE_SUCESSFULLY;
-import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_BLOCKED;
-import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_SUBSCRIBED;
-import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_UNBLOCKED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +41,7 @@ public class BookController {
 	@PostMapping(value = "/author/{authorId}/books/{bookId}")
 	public ResponseEntity<?> updateBook(@RequestBody BookVo book, @PathVariable String authorId,
 			@PathVariable String bookId) throws BookServiceExceptionHandler {
-
-		try {
-			book = bookService.updateBook(book, authorId, bookId);
-			return ResponseEntity.status(200).body(book);
-
-		} catch (Exception e) {
-			throw new BookServiceExceptionHandler("Updating the Book got error--->", e);
-		}
+		return ResponseEntity.ok(bookService.updateBook(book, authorId, bookId));
 	}
 
 	@GetMapping("/search")
@@ -124,7 +113,7 @@ public class BookController {
 		if (emailId != null && !emailId.equalsIgnoreCase("")) {
 			try {
 				BookVo subscribBookByReader = bookService.getSubscribeBookByReader(emailId, subscriptionId);
-				return ResponseEntity.ok( new MessageResponse(subscribBookByReader.getBookContent()));
+				return ResponseEntity.ok(new MessageResponse(subscribBookByReader.getBookContent()));
 			} catch (Exception e) {
 				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
 			}
@@ -160,12 +149,27 @@ public class BookController {
 					.body("Data Missing!.. authorId:" + authorId + "bookId:" + bookId + "block:" + block);
 		}
 	}
+
 	@GetMapping("/author/{authorId}/books")
-	public ResponseEntity<?> getAuthorCreatedBooks(@PathVariable String authorId)
-			throws BookServiceExceptionHandler {
+	public ResponseEntity<?> getAuthorCreatedBooks(@PathVariable String authorId) throws BookServiceExceptionHandler {
 		if (authorId != null && !authorId.equalsIgnoreCase("")) {
 			try {
 				List<BookVo> subscribBooksByReader = bookService.getAuthorCreatedBooks(authorId);
+				return ResponseEntity.status(200).body(subscribBooksByReader);
+			} catch (Exception e) {
+				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);
+			}
+		} else {
+			throw new BookServiceExceptionHandler(DATA_MISSING);
+		}
+	}
+
+	@GetMapping("/author/{authorId}/books/{bookId}")
+	public ResponseEntity<?> getAuthorCreatedBook(@PathVariable String authorId, @PathVariable String bookId)
+			throws BookServiceExceptionHandler {
+		if (authorId != null && !authorId.equalsIgnoreCase("")) {
+			try {
+				List<BookVo> subscribBooksByReader = bookService.getAuthorCreatedBook(authorId, bookId);
 				return ResponseEntity.status(200).body(subscribBooksByReader);
 			} catch (Exception e) {
 				throw new BookServiceExceptionHandler(SOMETHING_WENT_WRONG_PLESE_TRY_AFTER_SOME_TIME);

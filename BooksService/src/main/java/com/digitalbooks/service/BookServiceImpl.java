@@ -7,7 +7,6 @@ import static com.digitalbooks.utility.BooksConstant.CAN_NOT_CANCEL_SUBSCRIPTION
 import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_BOOK_WITH_ID;
 import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_BOOK;
 import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_SUBSCRIPTION_FOR_THE_BOOK_WITH_ID;
-import static com.digitalbooks.utility.BooksConstant.CAN_NOT_FIND_THE_SUBSCRIPTION_ID;
 import static com.digitalbooks.utility.BooksConstant.DATA_MISSING;
 import static com.digitalbooks.utility.BooksConstant.SUBSCRIPTION_CANCLE_SUCESSFULLY;
 import static com.digitalbooks.utility.BooksConstant.SUCCESSFULLY_BLOCKED;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.digitalbooks.dto.ReaderVo;
@@ -68,7 +66,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public BookVo updateBook(BookVo book, String authorId, String bookId) throws BookServiceExceptionHandler {
+	public MessageResponse updateBook(BookVo book, String authorId, String bookId) throws BookServiceExceptionHandler {
 		if (bookId != null && !bookId.equalsIgnoreCase("")) {
 			Optional<BookVo> oBook = bookRepository.findById(Long.parseLong(bookId));
 			if (!oBook.isEmpty() && oBook.get().getAuthorId().equalsIgnoreCase(authorId)) {
@@ -92,13 +90,14 @@ public class BookServiceImpl implements BookService {
 					oBook.get().setIsActive(book.getIsActive());
 				oBook.get().setUpdatedDt(new Date());
 
-				return bookRepository.save(oBook.get());
+				bookRepository.save(oBook.get());
+				return  new MessageResponse("Book has updated successfully!");
 			} else {
-				throw new BookServiceExceptionHandler(AUTHOR_ID_IS_NOT_MATCHING_WITH_THIS_BOOK);
+				return new MessageResponse(AUTHOR_ID_IS_NOT_MATCHING_WITH_THIS_BOOK);
 			}
 
 		} else {
-			throw new BookServiceExceptionHandler(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
+			return new MessageResponse(CAN_NOT_FIND_BOOK_WITH_ID + bookId);
 		}
 	}
 
@@ -305,6 +304,14 @@ public class BookServiceImpl implements BookService {
 			books = bookRepository.findByAuthorId(authorId);
 		}
 
+		return books;
+	}
+	
+	public List<BookVo> getAuthorCreatedBook(String authorId, String bookId)throws BookServiceExceptionHandler{
+		List<BookVo> books = null;
+		if (bookRepository.existsByAuthorIdAndBookId(authorId,Long.parseLong(bookId))) {
+			books = bookRepository.findByAuthorIdAndBookId(authorId,Long.parseLong(bookId));
+		}
 		return books;
 	}
 }
