@@ -28,9 +28,15 @@ export class RegisterComponent implements OnInit {
 console.log(this.form);
     this.authService.register(username, email, password,role).subscribe(
       data => {
+        if(data!=null&&data.message=='Error: Username is already taken!'){
+          console.log(data);
+          this.errorMessage = data.message;
+          this.isSignUpFailed = true;
+        }else{
         console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
+      }
       },
       err => {
         this.errorMessage = err.error.message;

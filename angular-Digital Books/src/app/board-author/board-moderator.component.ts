@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 
 @Component({
@@ -20,17 +21,12 @@ export class BoardModeratorComponent implements OnInit {
   isCreatedIn = false;
   isCreatedFailed = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,private token: TokenStorageService) { }
 
   ngOnInit(): void {
-    this.userService.getModeratorBoard().subscribe(
-      data => {
-        this.content = data;
-      },
-      err => {
-        this.content = JSON.parse(err.error).message;
-      }
-    );
+  
+        this.content ='Welcome '+ this.token.getUser().username;
+     
   }
 
   onSubmit(): void {

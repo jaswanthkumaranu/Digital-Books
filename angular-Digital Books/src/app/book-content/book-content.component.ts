@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../_services/user.service';
 
 @Component({
@@ -9,11 +9,11 @@ import { UserService } from '../_services/user.service';
 })
 export class BookContentComponent implements OnInit {
 
-  content?:string;
-  constructor(private router: Router) { }
+  content?:string |null='';
+  constructor(private route:ActivatedRoute) { }
 
   ngOnInit(): void {
-     console.log(this.router.getCurrentNavigation);
+     this.content= this.route.snapshot.paramMap.get('bookContent');
       
 
   }

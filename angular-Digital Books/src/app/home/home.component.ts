@@ -32,17 +32,17 @@ export class HomeComponent implements OnInit {
   constructor(private userService: UserService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
-    this.userService.getPublicContent().subscribe(
-      data => {
-        console.log('$$$content$$$' + data);
+    // this.userService.getPublicContent().subscribe(
+    //   data => {
+    //     console.log('$$$content$$$' + data);
 
-        this.content = data;
-      },
-      err => {
-        this.content = JSON.parse(err.error).message;
+    //     this.content = data;
+    //   },
+    //   err => {
+    //     this.content = JSON.parse(err.error).message;
 
-      }
-    );
+    //   }
+    // );
   }
   subscribe(bookId:string):void{
     
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     this.userService.subscribeBook(this.reader,bookId).subscribe(
       data => {
         console.log(data);
-        alert(data);
+        alert(JSON.parse(data).message);
         
       },
       err => {
@@ -66,13 +66,7 @@ export class HomeComponent implements OnInit {
     const { category, title, author, price, publisher } = this.form;
     this.userService.search(category, title, author, price, publisher).subscribe(
       data => {
-        // console.log(data);
         this.bookList = JSON.parse(data);
-        // console.log(this.bookList);
-        console.log(this.role);
-
-
-
       },
       err => {
         this.errorMessage = err.error.message;

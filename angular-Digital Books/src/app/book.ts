@@ -15,6 +15,7 @@ export interface Book {
     createdDt: null,
     block: null,
     subscriptionCount: null
+    subscriptionId:null
 
     
 }

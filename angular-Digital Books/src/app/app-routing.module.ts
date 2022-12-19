@@ -10,6 +10,9 @@ import { BoardModeratorComponent } from './board-author/board-moderator.componen
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardReaderComponent } from './board-reader/board-reader.component';
 import { BookContentComponent } from './book-content/book-content.component';
+import { UpdateBookComponent } from './update-book/update-book.component';
+import { EditbookComponent } from './editbook/editbook.component';
+import { ErrorPageComponentComponent } from './error-page-component/error-page-component.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,7 +24,10 @@ const routes: Routes = [
   { path: 'reader', component: BoardReaderComponent },
   { path: 'admin', component: BoardAdminComponent },
   { path: 'read', component: BookContentComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: 'updateBook', component: UpdateBookComponent },
+  { path: 'editBook', component: EditbookComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**',pathMatch: 'full', component: ErrorPageComponentComponent }
 ];
 
 @NgModule({
