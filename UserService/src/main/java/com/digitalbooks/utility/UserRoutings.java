@@ -1,6 +1,10 @@
 package com.digitalbooks.utility;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class UserRoutings {
+	
+	
 	public static final String GET_ALL_USER="/getAllUsers";
 	public static final String GET_USER_BY_ID="/getUserById/{id}";
 	public static final String INSERT_USER_DATA="/insertUserData";

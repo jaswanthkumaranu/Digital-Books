@@ -1,8 +1,10 @@
 package com.digitalbooks.rest;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,9 +22,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Component
 public class RestClientRest {
-	private static final String BOOK_URL = "http://localhost:8084/book/";
+	
 	@Autowired
 	RestTemplate restTemplate;
+	@Value("${um.app.bookUrl}")
+	private String BOOK_URL;
 
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<Object> getBookDetails(String url,BookDto book) {

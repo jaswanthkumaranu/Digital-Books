@@ -2,6 +2,7 @@ package com.digitalbooks.wtsecurity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,7 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.digitalbooks.UserManagementApplication;
 import com.digitalbooks.service.UserService;
 import com.digitalbooks.wtsecurity.jwt.AuthEntryPointJwt;
 import com.digitalbooks.wtsecurity.jwt.AuthTokenFilter;
@@ -25,7 +28,7 @@ import com.digitalbooks.wtsecurity.jwt.AuthTokenFilter;
 		// securedEnabled = true,
 		// jsr250Enabled = true,
 		prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 	@Autowired
 	UserService userDetailsService;
 
@@ -65,6 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**","/h2-console/**","/localhost:4200/**");
+        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**","/h2-console/**","/localhost:4200/**","/front-end-digitalbook.s3.us-east-1.amazonaws.com/**");
     }
+	
+
 }

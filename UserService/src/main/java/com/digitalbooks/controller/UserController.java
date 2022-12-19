@@ -112,7 +112,7 @@ public class UserController {
 	}
 
 	@PostMapping("/author/{authorId}/books")
-//	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
 	public ResponseEntity<?> createBook(@RequestBody BookDto book, @PathVariable String authorId)
 			throws UserManagmentException {
 		try {
@@ -130,6 +130,7 @@ public class UserController {
 	}
 
 	@PostMapping(value="/author/{authorId}/books/{bookId}")
+	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
 	public ResponseEntity<?> updateBook(@RequestBody BookDto book,@PathVariable String authorId,@PathVariable String bookId) throws UserManagmentException{
 		
 		try {
@@ -155,6 +156,7 @@ public class UserController {
 		
 	}
 	@PostMapping("/{bookId}/subscribe") 
+	@PreAuthorize("hasRole('READER') or hasRole('ADMIN')")
 	public  ResponseEntity<?> subscribeBook(@RequestBody ReaderVo reader,  @PathVariable String bookId) throws UserManagmentException{
 		try {
 			ResponseEntity<MessageResponse> result = userService.subscribeBook(bookId,reader);
@@ -167,6 +169,7 @@ public class UserController {
 	
 	
 	@GetMapping("/readers/{emailId}/books")
+	@PreAuthorize("hasRole('READER') or hasRole('ADMIN')")
 	public ResponseEntity<List<BookDto>> getAllSubscribeBooksByReader(@PathVariable String emailId) throws UserManagmentException{
 		if(emailId!=null&&!emailId.equalsIgnoreCase("")) {
 			try {
@@ -183,6 +186,7 @@ public class UserController {
 	
 	
 	@GetMapping("/readers/{emailId}/books/{subscriptionId}")
+	@PreAuthorize("hasRole('READER') or hasRole('ADMIN')")
 	public ResponseEntity<BookDto> getSubscribeBookByReaderEmailId(@PathVariable String emailId,@PathVariable String subscriptionId) throws UserManagmentException{
 		if(emailId!=null&&!emailId.equalsIgnoreCase("")) {
 			try {
@@ -199,6 +203,7 @@ public class UserController {
 	
 	
 	@GetMapping("/readers/{emailId}/books/{subscriptionId}/read")
+	@PreAuthorize("hasRole('READER') or hasRole('ADMIN')")
 	public ResponseEntity<?> getSubscribeBookContentByReaderEmailId(@PathVariable String emailId,@PathVariable String subscriptionId) throws UserManagmentException{
 		if(emailId!=null&&!emailId.equalsIgnoreCase("")) {
 			try {
@@ -216,6 +221,7 @@ public class UserController {
 	
 	
 	@PostMapping("/readers/{readerId}/books/{subscriptionId}/cancel-subscription")
+	@PreAuthorize("hasRole('READER') or hasRole('ADMIN')")
 	public ResponseEntity<?>cancleSubscriptionWithIn24Hours(@PathVariable String readerId,@PathVariable String subscriptionId ) throws UserManagmentException{
 		if(readerId!=null &&!readerId.equalsIgnoreCase("") && !subscriptionId.equalsIgnoreCase("") &&subscriptionId!=null) {
 			ResponseEntity<MessageResponse> cancle=userService.cancleSubscriptionWithIn24Hours(readerId,subscriptionId);
@@ -227,7 +233,8 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("author/{authorId}/books/{bookId}/block={block}")
+	@PostMapping("/author/{authorId}/books/{bookId}/block={block}")
+	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
 	public ResponseEntity<?> blockOrUnBlockBookByAuthor(@PathVariable(value="authorId") String authorId,@PathVariable(value="bookId") String bookId,@PathVariable(value="block") String block) throws UserManagmentException{
 		if(block!=null&&!block.equalsIgnoreCase("")&&authorId!=null&&bookId!=null) {
 			try {
@@ -243,6 +250,7 @@ public class UserController {
 		}
 	}
 	@GetMapping("/author/{authorId}/books")
+	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
 	public ResponseEntity<?> getAuthorCreatedBooks(@PathVariable String authorId)
 			throws UserManagmentException {
 		if (authorId != null && !authorId.equalsIgnoreCase("")) {
@@ -257,6 +265,7 @@ public class UserController {
 		}
 	}
 	@GetMapping("/author/{authorId}/books/{bookId}")
+	@PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
 	public ResponseEntity<?> getAuthorCreatedBook(@PathVariable String authorId,@PathVariable String bookId)
 			throws UserManagmentException {
 		if (authorId != null && !authorId.equalsIgnoreCase("")) {

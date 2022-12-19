@@ -7,6 +7,7 @@ D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\payload\request
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\payload\response\JwtResponse.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\controller\UserController.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\service\UserDetailsImpl.java
+D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\wtsecurity\WebConfig.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\payload\request\SignupRequest.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\wtsecurity\jwt\JwtUtils.java
 D:\use cases\usecase1\UserService\src\main\java\com\digitalbooks\controller\AuthController.java
